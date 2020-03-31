@@ -23,8 +23,9 @@ public final class ConfigParser {
      * 指定Job配置路径，ConfigParser会解析Job、Plugin、Core全部信息，并以Configuration返回
      */
     public static Configuration parse(final String jobPath) {
+        //从job.json中获取job的配置信息
         Configuration configuration = ConfigParser.parseJobConfig(jobPath);
-
+        //把datax的conf/core.json中的配置合并进来，主要有entry、common、core这几项
         configuration.merge(
                 ConfigParser.parseCoreConfig(CoreConstant.DATAX_CONF_PATH),
                 false);
@@ -33,7 +34,7 @@ public final class ConfigParser {
                 CoreConstant.DATAX_JOB_CONTENT_READER_NAME);
         String writerPluginName = configuration.getString(
                 CoreConstant.DATAX_JOB_CONTENT_WRITER_NAME);
-
+        //从job.json中获取preHandler名称，可能为null
         String preHandlerName = configuration.getString(
                 CoreConstant.DATAX_JOB_PREHANDLER_PLUGINNAME);
 
@@ -51,6 +52,7 @@ public final class ConfigParser {
             pluginList.add(postHandlerName);
         }
         try {
+            //将用到的插件的plugin.json都合并进来。插件的plugin.json放在datax/plugin/reader下面的各个插件中还有datax/plugin/writer下面的各个插件中
             configuration.merge(parsePluginConfig(new ArrayList<String>(pluginList)), false);
         }catch (Exception e){
             //吞掉异常，保持log干净。这里message足够。
@@ -115,6 +117,14 @@ public final class ConfigParser {
         return jobContent;
     }
 
+    /**
+     * 解析插件的plugin.json的内容
+     * 将datax/plugin目录下的reader目录下各个reader的plugin.json
+     * 还有datax/plugin目录下的writer目录下各个writer的plugin.json
+     * 都加载进来
+     * @param wantPluginNames
+     * @return
+     */
     public static Configuration parsePluginConfig(List<String> wantPluginNames) {
         Configuration configuration = Configuration.newDefault();
 

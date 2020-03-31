@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by jingxing on 14-8-24.
  * <p/>
- * 插件加载器，大体上分reader、transformer（还未实现）和writer三中插件类型，
+ * 插件加载器，大体上分reader、transformer（还未实现）和writer三种插件类型，
  * reader和writer在执行时又可能出现Job和Task两种运行时（加载的类不同）
  */
 public class LoadUtil {
@@ -60,6 +60,12 @@ public class LoadUtil {
         pluginRegisterCenter = pluginConfigs;
     }
 
+    /**
+     * 其实感觉这个map中的key不一定非得用String类型，用一个自定义的Key对象，这个Key中有pluginType和pluginName属性即可。
+     * @param pluginType
+     * @param pluginName
+     * @return
+     */
     private static String generatePluginKey(PluginType pluginType,
                                             String pluginName) {
         return String.format(pluginTypeNameFormat, pluginType.toString(),
@@ -183,6 +189,7 @@ public class LoadUtil {
 
         JarLoader jarLoader = jarLoaderCenter.get(generatePluginKey(pluginType,
                 pluginName));
+        //缓存里如果没有，就先放入，后续再来读取的时候就有了
         if (null == jarLoader) {
             String pluginPath = pluginConf.getString("path");
             if (StringUtils.isBlank(pluginPath)) {

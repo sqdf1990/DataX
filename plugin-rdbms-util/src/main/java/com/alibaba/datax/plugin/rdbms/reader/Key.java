@@ -22,7 +22,9 @@ public final class Key {
     public final static String WHERE = "where";
 
     public final static String HINT = "hint";
-
+    /**
+     * 切分主键 split primary key
+     */
     public final static String SPLIT_PK = "splitPk";
     
     public final static String SPLIT_MODE = "splitMode";

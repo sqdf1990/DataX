@@ -12,6 +12,10 @@ public final class ClassLoaderSwapper {
     private ClassLoaderSwapper() {
     }
 
+    /**
+     * 调用此方法获得的ClassLoaderSwapper中的storeClassLoader是null。
+     * @return
+     */
     public static ClassLoaderSwapper newCurrentThreadClassLoaderSwapper() {
         return new ClassLoaderSwapper();
     }

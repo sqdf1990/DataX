@@ -655,6 +655,7 @@ public class JobContainer extends AbstractContainer {
             JobPluginCollector jobPluginCollector) {
         this.readerPluginName = this.configuration.getString(
                 CoreConstant.DATAX_JOB_CONTENT_READER_NAME);
+        //将当前线程的类加载器设置为相应的reader插件对应的jarLoader
         classLoaderSwapper.setCurrentThreadClassLoader(LoadUtil.getJarLoader(
                 PluginType.READER, this.readerPluginName));
 
@@ -672,6 +673,7 @@ public class JobContainer extends AbstractContainer {
         jobReader.setJobPluginCollector(jobPluginCollector);
         jobReader.init();
 
+        //将当前线程的类加载器恢复成classLoaderSwapper中保存的类加载器
         classLoaderSwapper.restoreCurrentThreadClassLoader();
         return jobReader;
     }
@@ -685,6 +687,7 @@ public class JobContainer extends AbstractContainer {
             JobPluginCollector jobPluginCollector) {
         this.writerPluginName = this.configuration.getString(
                 CoreConstant.DATAX_JOB_CONTENT_WRITER_NAME);
+        //将当前线程的类加载器设置为相应的writer插件对应的jarLoader
         classLoaderSwapper.setCurrentThreadClassLoader(LoadUtil.getJarLoader(
                 PluginType.WRITER, this.writerPluginName));
 
@@ -702,6 +705,8 @@ public class JobContainer extends AbstractContainer {
         jobWriter.setPeerPluginName(this.readerPluginName);
         jobWriter.setJobPluginCollector(jobPluginCollector);
         jobWriter.init();
+
+        //将当前线程的类加载器恢复成classLoaderSwapper中保存的类加载器
         classLoaderSwapper.restoreCurrentThreadClassLoader();
 
         return jobWriter;
